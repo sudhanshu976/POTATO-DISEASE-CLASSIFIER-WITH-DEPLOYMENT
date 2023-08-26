@@ -9,6 +9,7 @@ import base64
 from PIL import Image
 from numpy import asarray
 from io import BytesIO,StringIO
+import cv2
 
 app=Flask(__name__)
 model = tf.keras.models.load_model('model.h5')
@@ -21,14 +22,16 @@ def home():
 @app.route('/predict',methods=['POST'])
 def predict():
     image = request.files['file']
-    
+    #image.save('static/file.jpg')
  
-    # asarray() class is used to convert
-    # PIL images into NumPy arrays
-    image = Image.open(image)
-    data = asarray(image)
     
-    #img_array = img_to_array('static/file.jpg')
+    image = Image.open(image)
+
+    
+    resized = image.resize((256, 256))
+    data = asarray(resized)
+    
+    
     img_array = tf.expand_dims(data,0)
         
     predictions = model.predict(img_array)
@@ -38,11 +41,11 @@ def predict():
     result=np.argmax(predictions[0])
 
     if result == 0:
-        result='Early Blight'
+        result='This potato has a Early Blight Disease '
     elif result == 1:
-        result='Late Blight '
+        result='This potato has a Late Blight Disease '
     else:
-        result = "Healthy"
+        result = "This potato is Healthy"
     
     return render_template('home.html',result=result)
 
