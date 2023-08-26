@@ -21,11 +21,11 @@ def home():
 @app.route('/predict',methods=['POST'])
 def predict():
     image = request.files['file']
-    image.save('static/file.jpg')
+    
  
     # asarray() class is used to convert
     # PIL images into NumPy arrays
-    image = Image.open('static/file.jpg')
+    image = Image.open(image)
     data = asarray(image)
     
     #img_array = img_to_array('static/file.jpg')
